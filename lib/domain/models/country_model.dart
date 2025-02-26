@@ -62,7 +62,6 @@ class CountryModel {
           continents: continents ?? this.continents,);
 
   factory CountryModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     return CountryModel(
       name: Name.fromJson(json["name"] ?? 'No tiene nombre'),
       capital: List<String>.from(

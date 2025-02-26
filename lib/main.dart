@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/route_manager.dart';
 import 'package:pruebatecnica/config/app_router.dart';
+import 'package:pruebatecnica/config/app_theme.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Prueba técnica de la aplicación',
       getPages: AppRouter().appRouter,
       initialRoute: AppRouter.home,
+      theme: AppTheme().theme,
     );
   }
 }

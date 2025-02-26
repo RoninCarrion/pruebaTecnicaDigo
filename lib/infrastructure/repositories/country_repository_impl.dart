@@ -13,7 +13,7 @@ class CountryRepositoryImpl extends CountryRepository {
   }
 
   @override
-  Future<List<CountryModel>> getCountriesByRegion(
+  Future<List<CountryModel>> getCountriesByContinent(
       {required String query}) async {
     return await _datasource.getCountriesByRegion(query: query);
   }

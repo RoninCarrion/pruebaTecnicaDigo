@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:pruebatecnica/config/app_router.dart';
 import 'package:pruebatecnica/presentation/providers/country_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -11,9 +13,13 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Listar países'),
-        actions: [IconButton(onPressed: () {
-          
-        }, icon: Icon(Icons.search))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                Get.toNamed(AppRouter.searchScreen);
+              },
+              icon: Icon(Icons.search))
+        ],
       ),
       body: countryProv.when(
         data: (data) {
