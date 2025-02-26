@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pruebatecnica/presentation/providers/country_by_name.dart';
 import 'package:pruebatecnica/presentation/providers/country_provider.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class SearchScreen extends ConsumerWidget {
+  const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final countryProv = ref.watch(countryProvider);
+    final txtCtrl = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Listar países'),
-        actions: [IconButton(onPressed: () {
-          
-        }, icon: Icon(Icons.search))],
+        title: TextField(
+          controller: txtCtrl,
+          onChanged: (value) {
+            ref.read(queryProvider.notifier).state = value;
+          },
+        ),
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.filter_list)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.send_rounded)),
+        ],
       ),
       body: countryProv.when(
         data: (data) {

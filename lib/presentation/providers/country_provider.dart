@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pruebatecnica/infrastructure/datasources/country_datasource_impl.dart';
-import 'package:pruebatecnica/infrastructure/repositories/country_repository_impl.dart';
+import 'package:pruebatecnica/presentation/providers/country_repository_provider.dart';
 
 final countryProvider = FutureProvider(
   (ref) async {
-    final repository =
-        CountryRepositoryImpl(datasource: CountryDatasourceImpl());
-
+    final repository = ref.read(countryRepositoryProvider);
     return await repository.getCountries();
   },
 );
+
+
+

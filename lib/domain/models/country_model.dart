@@ -16,8 +16,6 @@ class CountryModel {
   final Region region;
   final Map<String, String> languages;
   final List<Continent> continents;
-  final Flags flags;
-  final PostalCode postalCode;
 
   CountryModel({
     required this.name,
@@ -25,8 +23,6 @@ class CountryModel {
     required this.region,
     required this.languages,
     required this.continents,
-    required this.flags,
-    required this.postalCode,
   });
 
   CountryModel copyWith({
@@ -63,22 +59,23 @@ class CountryModel {
           capital: capital ?? this.capital,
           region: region ?? this.region,
           languages: languages ?? this.languages,
-          continents: continents ?? this.continents,
-          flags: flags ?? this.flags,
-          postalCode: postalCode ?? this.postalCode);
+          continents: continents ?? this.continents,);
 
   factory CountryModel.fromJson(Map<String, dynamic> json) {
     print(json);
     return CountryModel(
-      name: Name.fromJson(json["name"]),
-      capital: List<String>.from(json["capital"].map((x) => x)),
+      name: Name.fromJson(json["name"] ?? 'No tiene nombre'),
+      capital: List<String>.from(
+          (json["capital"] == null) ? '' : json["capital"].map((x) => x ?? '')),
       region: regionValues.map[json["region"]] ?? Region.UNKNOWN,
-      languages: Map.from(json["languages"])
-          .map((k, v) => MapEntry<String, String>(k, v)),
-      continents: List<Continent>.from(
-          json["continents"].map((x) => continentValues.map[x])),
-      flags: Flags.fromJson(json["flags"]),
-      postalCode: PostalCode.fromJson(json["postalCode"]),
+      languages: json["languages"] == null
+          ? {}
+          : Map.from(json["languages"])
+              .map((k, v) => MapEntry<String, String>(k ?? '', v ?? '')),
+      continents: json["continents"] == null
+          ? []
+          : List<Continent>.from(
+              json["continents"].map((x) => continentValues.map[x?? ''])),
     );
   }
 
@@ -90,8 +87,6 @@ class CountryModel {
             Map.from(languages).map((k, v) => MapEntry<String, dynamic>(k, v)),
         "continents": List<dynamic>.from(
             continents.map((x) => continentValues.reverse[x])),
-        "flags": flags.toJson(),
-        "postalCode": postalCode.toJson(),
       };
 }
 
