@@ -16,18 +16,38 @@ class CountryNotifier extends StateNotifier<List<CountryModel>> {
   final CountryRepository repository;
   CountryNotifier(this.ref, this.repository) : super([]);
 
-
-
-  Future<void> searchCountries({required String query, required String type}) async {
+  Future<void> searchCountries(
+      {required String query, required String type}) async {
     try {
       state = await repository.getCountries();
     } catch (e) {
       throw Exception('Ha ocurrido un error inesperado. ${e.toString()}');
     }
   }
-  Future<void> searchCountriesByName({required String query}) async {
+
+  List<CountryModel> searchCountriesByName({required String query}) {
+    List<CountryModel> filteredList = [];
+    if (state.isEmpty) return filteredList;
+    if (query.isEmpty) return filteredList;
+    filteredList = state
+        .where(
+          (element) =>
+              element.name.common.toLowerCase().contains(query.toLowerCase()),
+        )
+        .toList();
+    return filteredList;
   }
-  Future<void> filterCountriesByContinent({required String query}) async {
-    
+  List<CountryModel> searchCountriesByContinent({required String query}) {
+    List<CountryModel> filteredList = [];
+    if (state.isEmpty) return filteredList;
+    if (query.isEmpty) return filteredList;
+    filteredList = state
+        .where(
+          (element) =>
+              element.continents[0].name.toLowerCase().contains(query.toLowerCase()),
+        )
+        .toList();
+    return filteredList;
   }
+
 }
