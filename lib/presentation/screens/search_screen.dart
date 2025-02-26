@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:pruebatecnica/config/app_router.dart';
 import 'package:pruebatecnica/presentation/providers/country_by_parameters_provider.dart';
 import 'package:pruebatecnica/presentation/providers/is_loading_provider.dart';
 
@@ -44,21 +46,25 @@ class SearchScreen extends ConsumerWidget {
                         child: Text(option
                             .toString()
                             .split('.')
-                            .last), // Quitar "SearchTypes."
+                            .last),
                       ))
                   .toList();
             },
           ),
           IconButton(
             onPressed: () async {
+              ref.read(isLoadingProvider.notifier).state = true;
+              Future.delayed(Duration(seconds: 1)); 
               if (ref.read(searchTypeProvider) == SearchTypes.country) {
                 await onCountryProvider.searchCountriesByName(
                     query: ref.read(queryProvider));
+              ref.read(isLoadingProvider.notifier).state = false;
                 return;
               }
               if (ref.read(searchTypeProvider) == SearchTypes.continent) {
                 await onCountryProvider.searchCountriesByContinent(
                     query: ref.read(queryProvider));
+              ref.read(isLoadingProvider.notifier).state = false;
               }
             },
             icon: Icon(Icons.send_rounded),
@@ -81,6 +87,7 @@ class SearchScreen extends ConsumerWidget {
                   itemCount: countryProvider.length,
                   itemBuilder: (context, index) {
                     return ListTile(
+                      onTap: () => Get.toNamed(AppRouter.datailsScreen, arguments: countryProvider[index]),
                       title: Text(countryProvider[index].name.common),
                     );
                   },

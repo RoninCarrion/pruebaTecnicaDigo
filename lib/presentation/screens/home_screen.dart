@@ -6,6 +6,7 @@ import 'package:pruebatecnica/presentation/common/custom_snackbar.dart';
 import 'package:pruebatecnica/presentation/providers/country_provider.dart';
 import 'package:pruebatecnica/presentation/providers/is_loading_provider.dart';
 import 'package:pruebatecnica/presentation/providers/local_database_provider.dart';
+import 'package:pruebatecnica/presentation/screens/search_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -46,6 +47,8 @@ class HomeScreen extends ConsumerWidget {
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     return ListTile(
+                      onTap: () => Get.toNamed(AppRouter.datailsScreen,
+                          arguments: data[index]),
                       title: Text(data[index].name.common),
                       subtitle: Text(data[index].capital.first),
                       trailing: IconButton(
@@ -93,35 +96,6 @@ class ErrorWidget extends StatelessWidget {
         ),
         Text(error)
       ],
-    );
-  }
-}
-
-class LoadingView extends StatelessWidget {
-  const LoadingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return ListView(
-      children: List.filled(12, customListTileItem(size)),
-    );
-  }
-
-  Widget customListTileItem(Size size) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.grey.shade300,
-      ),
-      title: Container(
-        height: size.height * 0.04,
-        width: size.width * 0.7,
-        decoration: BoxDecoration(color: Colors.grey.shade300),
-      ),
-      subtitle: Container(
-          height: size.height * 0.02,
-          width: size.width * 0.7,
-          decoration: BoxDecoration(color: Colors.grey.shade300)),
     );
   }
 }
