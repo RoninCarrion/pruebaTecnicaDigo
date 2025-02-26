@@ -1,13 +1,20 @@
-import 'package:get_storage/get_storage.dart';
 import 'package:pruebatecnica/domain/datasources/local_database_datasource.dart';
 import 'package:pruebatecnica/domain/models/country_model.dart';
+import 'package:pruebatecnica/domain/repositories/local_database_repository.dart';
 
-class LocalDatabaseDatasourceImpl extends LocalDatabaseDatasource {
-  final storage = GetStorage();
+class LocalDatabaseRepositoryImpl extends LocalDatabaseRepository {
+  final LocalDatabaseDatasource datasource;
+
+  LocalDatabaseRepositoryImpl({required this.datasource});
+
   @override
   Future<List<CountryModel>> getFavouritesCountry() async {
+    return await datasource.getFavouritesCountry();
+  }
 
-    return await storage.read('favourites');
-    
+  @override
+  Future<void> writeFavouritesCountry(
+      {required Map<String, dynamic> data}) async {
+    return await datasource.writeFavouritesCountry(data: data);
   }
 }

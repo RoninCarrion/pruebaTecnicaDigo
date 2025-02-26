@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:pruebatecnica/config/app_router.dart';
+import 'package:pruebatecnica/presentation/common/custom_snackbar.dart';
 import 'package:pruebatecnica/presentation/providers/country_provider.dart';
+import 'package:pruebatecnica/presentation/providers/is_loading_provider.dart';
+import 'package:pruebatecnica/presentation/providers/local_database_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -18,25 +21,56 @@ class HomeScreen extends ConsumerWidget {
               onPressed: () {
                 Get.toNamed(AppRouter.searchScreen);
               },
-              icon: Icon(Icons.search))
+              icon: Icon(Icons.search)),
+          IconButton(
+              onPressed: () async {
+                ref.read(isLoadingProvider.notifier).state = true;
+                await Future.delayed(Duration(seconds: 1));
+                await ref
+                    .read(localDatabaseProvider.notifier)
+                    .getFavouritesCountry();
+                ref.read(isLoadingProvider.notifier).state = false;
+                Get.toNamed(AppRouter.favouritesScreen);
+              },
+              icon: Icon(
+                Icons.favorite_rounded,
+                color: Colors.red,
+              ))
         ],
       ),
-      body: countryProv.when(
-        data: (data) {
-          return ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(data[index].name.common),
-              );
-            },
-          );
-        },
-        error: (error, stackTrace) => ErrorWidget(
-          error: error.toString(),
-        ),
-        loading: () => LoadingView(),
-      ),
+      body: (ref.watch(isLoadingProvider))
+          ? LoadingView()
+          : countryProv.when(
+              data: (data) {
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(data[index].name.common),
+                      subtitle: Text(data[index].capital.first),
+                      trailing: IconButton(
+                          onPressed: () {
+                            ref
+                                .read(localDatabaseProvider.notifier)
+                                .writeFavouritesCountry(country: data[index]);
+                            CustomSnackbar().showSnackBar(
+                                title: 'País favorito agregado',
+                                message:
+                                    'El país ${data[index].name.common} se ha agregado correctamente a tu lista de favoritos');
+                          },
+                          icon: Icon(
+                            Icons.favorite_border,
+                            color: Colors.red,
+                          )),
+                    );
+                  },
+                );
+              },
+              error: (error, stackTrace) => ErrorWidget(
+                error: error.toString(),
+              ),
+              loading: () => LoadingView(),
+            ),
     );
   }
 }
@@ -70,7 +104,7 @@ class LoadingView extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return ListView(
-      children: List.filled(7, customListTileItem(size)),
+      children: List.filled(12, customListTileItem(size)),
     );
   }
 
